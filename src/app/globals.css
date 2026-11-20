@@ -1,0 +1,382 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "leaflet/dist/leaflet.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Beacon Ops theme — follows the Durjog / Disaster Monitor System console:
+   indigo accent, neutral cool panels, status colours (official / AI / review /
+   verified / false) and a hazard palette. Light is the default; dark via .dark.
+   Variables keep the shadcn/ui contract so every shadcn component inherits it. */
+:root {
+  --radius: 0.625rem;
+  --background: #eef1f5;
+  --foreground: #141c24;
+  --card: #ffffff;
+  --card-foreground: #141c24;
+  --popover: #ffffff;
+  --popover-foreground: #141c24;
+  --primary: #2e3192;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f7fa;
+  --secondary-foreground: #141c24;
+  --muted: #ebeff4;
+  --muted-foreground: #56636f;
+  --accent: #e3e4f7;
+  --accent-foreground: #2e3192;
+  --destructive: #c0392b;
+  --border: #d9dfe7;
+  --input: #c8d0da;
+  --ring: #4b4fd1;
+
+  --chart-1: #4b4fd1;
+  --chart-2: #1f6fc0;
+  --chart-3: #d2452f;
+  --chart-4: #1c8a4b;
+  --chart-5: #6b3fc4;
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #141c24;
+  --sidebar-primary: #2e3192;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e3e4f7;
+  --sidebar-accent-foreground: #2e3192;
+  --sidebar-border: #d9dfe7;
+  --sidebar-ring: #4b4fd1;
+
+  /* status (Durjog) */
+  --success: #1c8a4b;
+  --success-soft: #ddf2e5;
+  --info: #1f6fc0;
+  --info-soft: #ddeaf8;
+  --warning: #a86b0a;
+  --warning-soft: #f8ecd3;
+  --danger: #c0392b;
+  --danger-soft: #f8dfdb;
+  --official: #6b3fc4;
+  --official-soft: #ece3fa;
+  --brand-navy: #2e3192;
+  --brand-red: #c1272d;
+
+  /* hazards */
+  --hz-flood: #2364d2;
+  --hz-surge: #5b4bc4;
+  --hz-landslide: #9a5b2e;
+  --hz-waterlog: #0f8797;
+  --hz-lightning: #b98500;
+  --hz-fire: #d2452f;
+  --hz-erosion: #6b7d25;
+  --hz-accident: #8a3f7a;
+  --hz-road: #56636a;
+  --hz-quake: #b33a1f;
+  --hz-heat: #c2650a;
+  --hz-cold: #1f6fc0;
+  --hz-collapse: #7e5446;
+
+  /* map */
+  --map-line: #2e3192;
+  --mask: #1a2230;
+  --mask-op: 0.38;
+  --shadow: 0 10px 30px rgba(20, 30, 50, 0.15);
+  color-scheme: light;
+}
+
+.dark {
+  --background: #0a1014;
+  --foreground: #e3ecef;
+  --card: #111a20;
+  --card-foreground: #e3ecef;
+  --popover: #16222a;
+  --popover-foreground: #e3ecef;
+  --primary: #6c72f0;
+  --primary-foreground: #ffffff;
+  --secondary: #16222a;
+  --secondary-foreground: #e3ecef;
+  --muted: #1c2b34;
+  --muted-foreground: #8fa3ac;
+  --accent: #1e2150;
+  --accent-foreground: #9ea2ff;
+  --destructive: #f06a5c;
+  --border: #24343e;
+  --input: #2f4350;
+  --ring: #9ea2ff;
+
+  --chart-1: #9ea2ff;
+  --chart-2: #5aa6f2;
+  --chart-3: #f2603f;
+  --chart-4: #3fc57e;
+  --chart-5: #b98cff;
+
+  --sidebar: #111a20;
+  --sidebar-foreground: #e3ecef;
+  --sidebar-primary: #9ea2ff;
+  --sidebar-primary-foreground: #0a1014;
+  --sidebar-accent: #1e2150;
+  --sidebar-accent-foreground: #9ea2ff;
+  --sidebar-border: #24343e;
+  --sidebar-ring: #9ea2ff;
+
+  --success: #3fc57e;
+  --success-soft: #123222;
+  --info: #5aa6f2;
+  --info-soft: #132a44;
+  --warning: #e8a93c;
+  --warning-soft: #3a2b10;
+  --danger: #f06a5c;
+  --danger-soft: #3f1a17;
+  --official: #b98cff;
+  --official-soft: #2a1c45;
+
+  --hz-flood: #3e8ef7;
+  --hz-surge: #8d7cf6;
+  --hz-landslide: #c98450;
+  --hz-waterlog: #2ec4d6;
+  --hz-lightning: #f2c230;
+  --hz-fire: #f2603f;
+  --hz-erosion: #a3b83f;
+  --hz-accident: #d46bb8;
+  --hz-road: #8c9aa1;
+  --hz-quake: #e0573a;
+  --hz-heat: #f08a24;
+  --hz-cold: #5aa6f2;
+  --hz-collapse: #b07a6a;
+
+  --map-line: #7e86ff;
+  --mask: #05090c;
+  --mask-op: 0.62;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: "IBM Plex Sans", "Hind Siliguri", "Segoe UI", Arial, sans-serif;
+  --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --font-bn: "Hind Siliguri", "Noto Sans Bengali", "Vrinda", sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 2px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-official: var(--official);
+  --color-official-soft: var(--official-soft);
+  --color-brand-red: var(--brand-red);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    font-size: 15px;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    line-height: 1.45;
+  }
+  :lang(bn),
+  .bn {
+    font-family: var(--font-bn);
+  }
+}
+
+/* Durjog-style demo marker */
+.demotag {
+  display: inline-block;
+  font: 700 10.5px/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7a3e00;
+  background: #ffe3b0;
+  border: 1px solid #e8a53a;
+  border-radius: 999px;
+  padding: 4px 9px;
+  white-space: nowrap;
+}
+
+/* ---------------- map (Leaflet, Durjog console style) ---------------- */
+.leaflet-container {
+  font-family: var(--font-sans);
+  background: var(--background);
+}
+/* "Blank" basemap = OSM tiles rendered monochrome; inverted in dark mode */
+.tiles-muted {
+  filter: grayscale(1) contrast(0.82) brightness(1.06) opacity(0.85);
+}
+.dark .tiles-muted {
+  filter: grayscale(1) invert(1) contrast(0.78) brightness(0.62) opacity(0.9);
+}
+.leaflet-control-attribution {
+  font-size: 10px !important;
+  background: color-mix(in srgb, var(--card) 80%, transparent) !important;
+  color: var(--muted-foreground) !important;
+}
+.leaflet-control-attribution a {
+  color: var(--ring) !important;
+}
+.leaflet-bar a {
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  border-color: var(--border) !important;
+}
+.leaflet-tooltip.dw-tip {
+  background: var(--card);
+  color: var(--foreground);
+  border: 1px solid var(--input);
+  box-shadow: var(--shadow);
+  border-radius: 7px;
+  font-size: 12px;
+  padding: 6px 8px;
+}
+.leaflet-tooltip.dw-tip:before {
+  display: none;
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--card);
+  color: var(--foreground);
+  box-shadow: var(--shadow);
+}
+.leaflet-popup-content {
+  margin: 10px 12px;
+  font-size: 12.5px;
+}
+
+/* event pin */
+.mk {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+.mk svg {
+  width: 62%;
+  height: 62%;
+}
+.mk.false {
+  opacity: 0.6;
+  border-style: dashed;
+  border-color: var(--danger);
+}
+.mk.review {
+  border-color: rgba(255, 255, 255, 0.55);
+}
+.mk .pulse {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  animation: mk-ring 2s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes mk-ring {
+  0% { transform: scale(1); opacity: 0.9; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+.mk .cnt {
+  position: absolute;
+  right: -7px;
+  top: -7px;
+  min-width: 17px;
+  height: 17px;
+  border-radius: 9px;
+  background: var(--card);
+  color: var(--foreground);
+  font: 700 10px/17px var(--font-mono);
+  text-align: center;
+  padding: 0 4px;
+  border: 1px solid var(--input);
+}
+.mk .drl {
+  position: absolute;
+  left: -6px;
+  bottom: -6px;
+  font: 700 8px/12px var(--font-mono);
+  background: var(--warning);
+  color: #000;
+  border-radius: 3px;
+  padding: 0 3px;
+}
+/* watch site (infrastructure) diamond */
+.watch-mk {
+  width: 14px;
+  height: 14px;
+  transform: rotate(45deg);
+  background: var(--brand-red);
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-red) 35%, transparent);
+}
+/* trigger / claim triangle */
+.trig-mk {
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 12px solid var(--warning);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+/* label chip (river / camera) */
+.chip-mk {
+  font: 600 10px var(--font-mono);
+  padding: 2px 5px;
+  border-radius: 5px;
+  background: var(--card);
+  border: 1px solid var(--hz-flood);
+  color: var(--hz-flood);
+  white-space: nowrap;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+}
+.chip-mk.alert {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+.chip-mk.off {
+  border-color: var(--muted-foreground);
+  color: var(--muted-foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mk .pulse { animation: none; }
+}
