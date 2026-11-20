@@ -4,7 +4,7 @@
 
 Operations desk for national disaster agencies, built by **Late Light Labs** for the International AI Builders Congress 2026 (Idea to Unicorn). Bangladesh pilot, designed for any at-risk country.
 
-Backend: [beacon-ops-backend](https://github.com/Mushfiq80/beacon-ops-backend)
+Backend: [beacon-ops-back](https://github.com/Mushfiq80/beacon-ops-back)
 
 > The demo runs on a fully synthetic drill, "Exercise Cyclone KESTREL", labelled SIMULATION on every screen. All figures are synthetic.
 

@@ -171,6 +171,15 @@ function Topbar() {
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  // /docs is a standalone pitch deck + documentation page, without the ops shell.
+  if (pathname?.startsWith("/docs")) {
+    return (
+      <TooltipProvider>
+        <div className="h-dvh overflow-y-auto">{children}</div>
+      </TooltipProvider>
+    );
+  }
   return (
     <TooltipProvider>
       <div className="flex h-dvh overflow-hidden">
